@@ -3,6 +3,8 @@ const express = require("express");
 const webpush = require("web-push");
 const app = express();
 
+app.use(express.json());
+
 // VAPID keys should be generated
 const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
 const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
@@ -25,7 +27,13 @@ app.post("/save-subscription", (req, res) => {
 // Send push notification route
 app.post("/send-push-notification", (req, res) => {
   webpush
-    .sendNotification(pushSubscription, "Your Push Payload Text")
+    .sendNotification(
+      pushSubscription,
+      JSON.stringify({
+        title: "Your Title",
+        body: "Your Body",
+      })
+    )
     .then((result) => console.log(result))
     .catch((e) => console.log(e.stack));
 

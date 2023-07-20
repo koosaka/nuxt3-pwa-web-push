@@ -31,10 +31,31 @@ export default defineNuxtConfig({
     },
     workbox: {
       navigateFallback: "/",
+      importScripts: [
+        "/sw.js", // この行を追加
+      ],
     },
     devOptions: {
       enabled: true,
       type: "module",
+    },
+  },
+  plugins: ["~/plugins/push-notifications.js"],
+  vite: {
+    server: {
+      proxy: {
+        // オプションを使用: http://localhost:5173/api/bar-> http://jsonplaceholder.typicode.com/bar
+        "^/api/.*": {
+          target: "http://localhost:8000",
+          changeOrigin: true,
+          rewrite: (path: any) => path.replace(/^\/api/, ""),
+        },
+      },
+    },
+  },
+  runtimeConfig: {
+    public: {
+      vapidKey: "",
     },
   },
 });
